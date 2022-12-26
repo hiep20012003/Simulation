@@ -60,8 +60,10 @@ void MenuTopo()
 			if (c == '2')
 				break;
 			if (c == 27)
+			{
 				end_simulation = 1;
-			return;
+				return;
+			}
 		}
 	}
 	system("cls");
