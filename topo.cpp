@@ -30,7 +30,7 @@ void TopoSimulation()
 	MenuTopo();
 	if (end_simulation == 1) return;
 	InitAlgorithm();
-	Sleep(SLEEP_TIME * 100);
+	Sleep(SLEEP_TIME * 150);
 	InputTopo();
 	cout << "Dang xu ly..." << endl;
 	ProcessTopoSort();
@@ -70,7 +70,7 @@ void MenuTopo()
 }
 void InitAlgorithm()
 {
-	Sleep(SLEEP_TIME * 100);
+	Sleep(SLEEP_TIME * 150);
 	int vt = 250;
 	int color = 15;
 	//setfontcolor(2);
@@ -95,7 +95,7 @@ void InputTopo()
 	if (check == true)
 	{
 		cout << N << " " << num_edges << '\n';
-		Sleep(SLEEP_TIME * 100);
+		Sleep(SLEEP_TIME * 150);
 	}
 	num_vertices = N;
 
@@ -141,7 +141,7 @@ void InputTopo()
 		if (check == true)
 		{
 			cout << x << " " << y << '\n';
-			Sleep(SLEEP_TIME * 100);
+			Sleep(SLEEP_TIME * 150);
 		}
 		A[y].COUNT = A[y].COUNT + 1;
 		count_prev[y].data = A[y].COUNT + 48;
@@ -223,7 +223,7 @@ void ProcessTopoSort()
 			pos_rear_queue.pos.left = pos_rear_queue.pos.right + 10;
 			pos_rear_queue.pos.right = pos_rear_queue.pos.left + 50;
 			PrintObject(count_prev[i], 11);
-			Sleep(SLEEP_TIME * 100);
+			Sleep(SLEEP_TIME * 150);
 			PrintObject(node[i], 8);
 			int limit_queue = QLINK[R].pos.left;
 			QLINK[R].pos.left = queue.pos.right + 50;
@@ -237,12 +237,12 @@ void ProcessTopoSort()
 				PrintObject(QLINK[R], 8);
 				Sleep(SLEEP_TIME);
 			}
-			Sleep(SLEEP_TIME * 100);
+			Sleep(SLEEP_TIME * 150);
 			PrintObject(QLINK[R]);
 			PrintObject(node[i]);
 
 			R = i;
-			Sleep(SLEEP_TIME * 100);
+			Sleep(SLEEP_TIME * 150);
 		}
 	}
 
@@ -286,30 +286,30 @@ void ProcessTopoSort()
 			queue_limit = k.pos.right + 10;
 			j = stoi(QLINK[j].data);
 		}
-
+		Sleep(SLEEP_TIME * 150);
 		SUCCESSOR* restore = A[ptr_front].TOP;
 		while (restore != nullptr)
 		{
 			PrintObject(restore->pos);
 			restore = restore->next;
 		}
-		Sleep(SLEEP_TIME * 100);
+		Sleep(SLEEP_TIME * 150);
 		PrintObject(node[F], 9);
 		for (P = A[F].TOP; P != nullptr; P = P->next)
 		{
-			Sleep(SLEEP_TIME * 100);
+			Sleep(SLEEP_TIME * 150);
 			PrintObject(P->pos, 8);
-			Sleep(SLEEP_TIME * 100);
+			Sleep(SLEEP_TIME * 150);
 			PrintObject(node[P->SUC], 8);
-			Sleep(SLEEP_TIME * 100);
+			Sleep(SLEEP_TIME * 150);
 			PrintObject(count_prev[P->SUC], 10);
 			count_prev[P->SUC].data = A[P->SUC].COUNT - 1 + 48;
-			Sleep(SLEEP_TIME * 100);
+			Sleep(SLEEP_TIME * 150);
 			if (count_prev[P->SUC].data == "0")
 				PrintObject(count_prev[P->SUC], 11);
 			else
 				PrintObject(count_prev[P->SUC], 10);
-			Sleep(SLEEP_TIME * 100);
+			Sleep(SLEEP_TIME * 150);
 			if (--A[P->SUC].COUNT != 0)
 			{
 				PrintObject(node[P->SUC]);
@@ -332,7 +332,7 @@ void ProcessTopoSort()
 			R = P->SUC;
 			pos_rear_queue.pos.left = pos_rear_queue.pos.right + 10;
 			pos_rear_queue.pos.right = pos_rear_queue.pos.left + 50;
-			Sleep(SLEEP_TIME * 100);
+			Sleep(SLEEP_TIME * 150);
 
 			PrintObject(node[P->SUC]);
 		}
