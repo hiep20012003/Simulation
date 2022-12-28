@@ -1,4 +1,4 @@
-#include <iostream>
+п»ї#include <iostream>
 #include <math.h>
 #include <windows.h>
 #include"graphics.h"
@@ -131,7 +131,6 @@ void rectangle(int x1, int y1, int x2, int y2)
 
 void gotoxy(int x, int y)
 {
-	//StdOut = GetStdHandle(STD_OUTPUT_HANDLE);
 	BGN.X = (short)x;
 	BGN.Y = (short)y;
 	SetConsoleCursorPosition(StdOut, BGN);
@@ -172,7 +171,6 @@ BOOL SetPoint(HDC hDC, HPEN hPen, COORD PNT)
 
 BOOL PlotLine(HDC hDC, HPEN hPen, COORD BGN, COORD END)
 {
-	//HPEN arrow = getPen(PS_SOLID, 4, RGB(255, 255, 255));
 	SelectObject(hDC, hPen);
 	SelectObject(hDC, BRUSH);
 	MoveToEx(hDC, BGN.X, BGN.Y, NULL);
@@ -215,30 +213,30 @@ COORD setCordScale(COORD POS, RECT pRECT)
 	double CX = (pRECT.right - pRECT.left) / nCOLS;
 	double CY = (pRECT.bottom - pRECT.top) / nROWS;
 
-	//При текстовом режиме(text mode) экран  делится  на  ячейки
-	//(80  или 40 колонок в ширину и 25 строк в высоту)
+	//ГЏГ°ГЁ ГІГҐГЄГ±ГІГ®ГўГ®Г¬ Г°ГҐГ¦ГЁГ¬ГҐ(text mode) ГЅГЄГ°Г Г­  Г¤ГҐГ«ГЁГІГ±Гї  Г­Г   ГїГ·ГҐГ©ГЄГЁ
+	//(80  ГЁГ«ГЁ 40 ГЄГ®Г«Г®Г­Г®ГЄ Гў ГёГЁГ°ГЁГ­Гі ГЁ 25 Г±ГІГ°Г®ГЄ Гў ГўГ»Г±Г®ГІГі)
 	POS.X *= CX;
 	POS.Y *= CY;
 
-	int xBORDER = GetSystemMetrics(SM_CXBORDER);//Ширина границы окна
-	int yBORDER = GetSystemMetrics(SM_CYMENU);  //Высота заголовка окна ~= высоте строк меню
-	int xDRAG = GetSystemMetrics(SM_CXDRAG);  //Число пикселей на гориз дрожение мыши
-	int yDRAG = GetSystemMetrics(SM_CYDRAG);  //Число пикселей на вертик дрожение мыши
+	int xBORDER = GetSystemMetrics(SM_CXBORDER);//ГГЁГ°ГЁГ­Г  ГЈГ°Г Г­ГЁГ¶Г» Г®ГЄГ­Г 
+	int yBORDER = GetSystemMetrics(SM_CYMENU);  //Г‚Г»Г±Г®ГІГ  Г§Г ГЈГ®Г«Г®ГўГЄГ  Г®ГЄГ­Г  ~= ГўГ»Г±Г®ГІГҐ Г±ГІГ°Г®ГЄ Г¬ГҐГ­Гѕ
+	int xDRAG = GetSystemMetrics(SM_CXDRAG);  //Г—ГЁГ±Г«Г® ГЇГЁГЄГ±ГҐГ«ГҐГ© Г­Г  ГЈГ®Г°ГЁГ§ Г¤Г°Г®Г¦ГҐГ­ГЁГҐ Г¬Г»ГёГЁ
+	int yDRAG = GetSystemMetrics(SM_CYDRAG);  //Г—ГЁГ±Г«Г® ГЇГЁГЄГ±ГҐГ«ГҐГ© Г­Г  ГўГҐГ°ГІГЁГЄ Г¤Г°Г®Г¦ГҐГ­ГЁГҐ Г¬Г»ГёГЁ
 
-	POS.X += xBORDER + xDRAG;//Ширина границы окна + число пикселей на дрожение мыши
+	POS.X += xBORDER + xDRAG;//ГГЁГ°ГЁГ­Г  ГЈГ°Г Г­ГЁГ¶Г» Г®ГЄГ­Г  + Г·ГЁГ±Г«Г® ГЇГЁГЄГ±ГҐГ«ГҐГ© Г­Г  Г¤Г°Г®Г¦ГҐГ­ГЁГҐ Г¬Г»ГёГЁ
 	POS.Y += yBORDER + yDRAG;
 	return POS;
 }
 
-// Cac ham tao them
+// CГЎc hГ m tбєЎo thГЄm
 
-// Disable Quick edit mode cua so console
+// TбєЇt Quick Edit Mode
 void disableSelection()
 {
 	StdIn = GetStdHandle(STD_INPUT_HANDLE);
 	SetConsoleMode(StdIn, ENABLE_EXTENDED_FLAGS);
 }
-// Set cac mode cua so console
+// Дђбє·t lбєЎi input mode cho cб»­a sб»• console
 void setConsoleMode()
 {
 	StdIn = GetStdHandle(STD_INPUT_HANDLE);
@@ -246,7 +244,7 @@ void setConsoleMode()
 	mode = ENABLE_ECHO_INPUT | ENABLE_LINE_INPUT | ENABLE_PROCESSED_INPUT;
 	SetConsoleMode(StdIn, mode);
 }
-// Lay vi tri cua con tro
+// LбєҐy vб»‹ trГ­ con trб»Џ hiб»‡n tбєЎi 
 COORD getConsoleCursorPosition()
 {
 	CONSOLE_SCREEN_BUFFER_INFO cbsi;
@@ -260,7 +258,7 @@ COORD getConsoleCursorPosition()
 		return invalid;
 	}
 }
-// Tat cuon cua so console
+// TбєЇt cuб»™n cб»§a sб»• Console
 void disableScroll()
 {
 	CONSOLE_SCREEN_BUFFER_INFO screenBufferInfo;
@@ -273,7 +271,7 @@ void disableScroll()
 		screenBufferInfo.srWindow.Top + 1;
 	SetConsoleScreenBufferSize(StdOut, new_screen_buffer_size);
 }
-// Tao Brush de chon mau cho ben trong cho rectangle hay circle
+// TбєЎo Brush Д‘б»ѓ vбєЅ mГ u cho hГ¬nh
 HBRUSH getBrush(int iBRUSH_STYLE, int iCOLORREF)
 {
 	LOGBRUSH br;
@@ -281,7 +279,7 @@ HBRUSH getBrush(int iBRUSH_STYLE, int iCOLORREF)
 	br.lbStyle = iBRUSH_STYLE;
 	return CreateBrushIndirect(&br);
 }
-// Chon mau brush
+// Chб»Ќn mГ u brush
 void setBrushColor(int color)
 {
 	if (color == 16) {
@@ -310,7 +308,7 @@ void setBrushColor(int color)
 	case 15: BRUSH = getBrush(PS_SOLID, RGB(255, 255, 255)); break;
 	}
 }
-// Lay gia tri mau hien tai cua brush
+// lбєҐy mГ u hiб»‡n tбєЎi brush
 COLORREF getBrushColor(HBRUSH brush)
 {
 	LOGBRUSH lbr;
@@ -322,7 +320,7 @@ COLORREF getBrushColor(HBRUSH brush)
 	}
 	return lbr.lbColor;
 }
-// Ve text len man hinh console voi font, color tuy chinh
+// VбєЅ text lГЄn console vб»›i font, color tГ№y chб»‰nh
 void printText(string mes, RECT pos, int fontSize, int color)
 {
 	HFONT f1 =
@@ -338,7 +336,7 @@ void printText(string mes, RECT pos, int fontSize, int color)
 	DrawTextA(hDC, mes.c_str(), -1, &pos, format);
 	DeleteObject(f1);
 }
-// Overload ham rectangle voi tham so khac
+// Overload hГ m rectangle
 void rectangle(RECT position)
 {
 	BGN.X = (short)position.left + movx;
@@ -347,7 +345,7 @@ void rectangle(RECT position)
 	POS.Y = (short)position.bottom + mov;
 	PlotRect(hDC, PEN, BGN, POS);
 }
-// Ham xoa doi tuong, xoa 1 vung theo 1 hinh chu nhat truyen vao
+// HГ m xГіa mб»™t vГ№ng theo hГ¬nh chб»Ї nhбє­t
 void clearObjectOnScreen(RECT pos)
 {
 	setBrushColor(16);
@@ -356,13 +354,13 @@ void clearObjectOnScreen(RECT pos)
 	setcolor(15);
 	setBrushColor(15);
 }
-// Overload ham outtextxy voi tham so truyen vao la string
+// Overload hГ m outtextxy tham sб»‘ lГ  string
 void outtextxy(int x, int y, string text)
 {
 	gotoxy(x / 8, y / 12);
 	std::cout << text;
 }
-// Ham ve mui ten 
+// HГ m vбєЅ mЕ©i tГЄn
 void drawArrow(int x1, int y1, int x2, int y2)
 {
 	double widthArrow = 6, x, y;

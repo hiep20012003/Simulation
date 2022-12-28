@@ -1,4 +1,4 @@
-#include"graphics.h"
+﻿#include"graphics.h"
 #include"circlelist.h"
 #include"linklist.h"
 #include"global.h"
@@ -7,7 +7,7 @@
 // Khoi tao circle_list
 CIRCLELIST* circle_list;
 
-// Ham goi chuong trinh mo phong
+// Gọi chương trình mô phỏng
 void CircleListSimulation()
 {
 	circle_list = new CIRCLELIST();
@@ -23,7 +23,7 @@ void CircleListSimulation()
 	system("cls");
 }
 
-// Bat su kien ban phim cho chuc nang insert, delete, end
+// Chạy chương trình mô phỏng
 void RunProgramCircleList()
 {
 	NODE* node_deleted;
@@ -31,12 +31,13 @@ void RunProgramCircleList()
 	int vt;
 	while (true)
 	{
-		if (_kbhit())
+		if (_kbhit())				// Bắt sự kiện bàn phím
 		{
-			CheckCurrentCursor();
+			CheckCurrentCursor();	// Kiếm tra vị trí con trỏ
 			char c = _getch();
-			if (c == '1')
+			if (c == '1')			// Nút INSERT
 			{
+				// Thông báo
 				if (circle_list->size == LIST_SIZE)
 				{
 					PrintToNewLine(cursor.x, cursor.y, "List was Full");
@@ -45,15 +46,22 @@ void RunProgramCircleList()
 				string insert_mes;
 				insert_mes = "Insert NODE";
 				PrintTo(cursor.x, cursor.y, insert_mes + ": ");
+
+				// NODE và vị trí thêm NODE
 				str = RealTimeInputString();
 				PrintTo(cursor.x, cursor.y, "Positon: ");
 				vt = RealTimeInputInt();
+
+				// Thêm NODE
 				circle_list->InsertNode(str, vt);
+				// Mô phỏng thêm NODE
 				InsertSimulationCircleList(vt);
+
 				PrintToNewLine(cursor.x, cursor.y, "Completed " + insert_mes);
 			}
-			else if (c == '2')
+			else if (c == '2')		// Nút INSERT
 			{
+				// Thông báo
 				if (circle_list->IsEmpty())
 				{
 					PrintToNewLine(cursor.x, cursor.y, "List Empty. Can't delete");
@@ -62,20 +70,26 @@ void RunProgramCircleList()
 				string delete_mes;
 				delete_mes = "Delete";
 				PrintTo(cursor.x, cursor.y, delete_mes + " In Position: ");
+
+				// NODE và vị trí xóa NODE
 				vt = RealTimeInputInt();
 				DeleteSimulationCircleList(vt);
 				node_deleted = circle_list->DeleteNode(vt);
-				if (vt >= circle_list->size - 1)
-					DrawLinkCircle(circle_list->pHead, circle_list->pTail);
+
 				PrintToNewLine(cursor.x, cursor.y, "Completed " + delete_mes + " NODE");
+
+				// pos_node_linklist luôn trỏ đến pTail và vị trí con trỏ NULL
 				if (circle_list->pTail != nullptr)
-					pos_in_linklist.pos = circle_list->pTail->node_region.pos;
+					pos_node_linklist.pos = circle_list->pTail->node_region.pos;
 				delete node_deleted;
 				if (circle_list->size == 0)
 				{
-					null.pos.left = pos_in_linklist.pos.right;
-					null.pos.right = pos_in_linklist.pos.right + 100;
+					null.pos.left = pos_node_linklist.pos.right;
+					null.pos.right = pos_node_linklist.pos.right + 100;
 				}
+				// Vẽ liên kết NODE đầu và Cuối
+				if (vt > circle_list->size)
+					DrawLinkCircle(circle_list->pHead, circle_list->pTail);
 			}
 			else if (c == 27)
 			{
@@ -85,39 +99,45 @@ void RunProgramCircleList()
 	}
 }
 
-// Ham mo phong insert
+// Mô phỏng Insert
 void InsertSimulationCircleList(int k)
 {
 	RECT clear;
+
+	// Thêm NODE đầu 
 	if (k <= 0 || circle_list->size == 1)
 	{
-		pos_in_linklist = {
+		// Xác định vị trí thêm NODE trên màn hình console
+		pos_node_linklist = {
 			list_box.pos.left,
 			list_box.pos.top,
 			list_box.pos.left + RECT_NODE_WIDTH,
 			list_box.pos.bottom };
 
-		REGION temp_head = pos_in_linklist;
+		// Tạo ví trí ban đầu của NODE và vị trí NODE di chuyển tới
+		REGION temp_head = pos_node_linklist;
 		temp_head.pos.left = display_box.pos.left + 10;
 		temp_head.pos.right = temp_head.pos.left + RECT_NODE_WIDTH;
 		circle_list->pHead->node_region.SetRegion(temp_head.pos, circle_list->pHead->data);
 
+		// Nếu list ban đầu không trống
+		// Di chuyển các NODE ra phía sau làm trống vị trí đầu tiên để thêm NODE mới
 		if (circle_list->size > 1)
 		{
 			NODE* temp = circle_list->pTail;
-			pos_in_linklist.pos = circle_list->pTail->node_region.pos;
-			pos_in_linklist.pos.left += RECT_NODE_WIDTH * 2 + 10;
-			pos_in_linklist.pos.right += RECT_NODE_WIDTH * 2 + 10;
+			pos_node_linklist.pos = circle_list->pTail->node_region.pos;
+			pos_node_linklist.pos.left += RECT_NODE_WIDTH * 2 + 10;
+			pos_node_linklist.pos.right += RECT_NODE_WIDTH * 2 + 10;
 			while (temp != nullptr && temp != circle_list->pHead)
 			{
-				while (temp->node_region.pos.right != pos_in_linklist.pos.right)
+				while (temp->node_region.pos.right != pos_node_linklist.pos.right)
 				{
 					clear = temp->node_region.pos;
 					clear.right += RECT_NODE_WIDTH + 15;
 					clearObjectOnScreen(clear);
 					temp->node_region.pos.left += DENTAL_MOVE;
 					temp->node_region.pos.right += DENTAL_MOVE;
-					DrawListCircleNode(temp);
+					DrawListNode(temp);
 					DrawLinkCircle(circle_list->pHead->pNext, circle_list->pTail);
 					Sleep(SLEEP_TIME);
 				}
@@ -126,37 +146,46 @@ void InsertSimulationCircleList(int k)
 				{
 					prev_temp = prev_temp->pNext;
 				}
-				pos_in_linklist.pos = temp->node_region.pos;
-				pos_in_linklist.pos.left -= RECT_NODE_WIDTH * 2 + 10;
-				pos_in_linklist.pos.right -= RECT_NODE_WIDTH * 2 + 10;
+				pos_node_linklist.pos = temp->node_region.pos;
+				pos_node_linklist.pos.left -= RECT_NODE_WIDTH * 2 + 10;
+				pos_node_linklist.pos.right -= RECT_NODE_WIDTH * 2 + 10;
 				temp = prev_temp;
 			}
 		}
-		while (circle_list->pHead->node_region.pos.left != pos_in_linklist.pos.left)
+
+		// Di chuyển NODE mới vào vị trí trong list
+		while (circle_list->pHead->node_region.pos.left != pos_node_linklist.pos.left)
 		{
 			clear = circle_list->pHead->node_region.pos;
 			clear.right += RECT_NODE_WIDTH + 15;
 			clearObjectOnScreen(clear);
 			circle_list->pHead->node_region.pos.left += DENTAL_MOVE;
 			circle_list->pHead->node_region.pos.right += DENTAL_MOVE;
-			DrawListCircleNode(circle_list->pHead);
+			DrawListNode(circle_list->pHead);
 
 			Sleep(SLEEP_TIME);
 		}
+		// Vẽ liên kiết giữa NODE đầu và NODE cuối
 		DrawLinkCircle(circle_list->pHead, circle_list->pTail);
 	}
+	// Thêm NODE cuối
 	else if (k >= circle_list->size - 1)
 	{
+		// Đặt lại vị trí thêm NODE nếu list ban đầu không trống
 		if (circle_list->pHead != circle_list->pTail)
 		{
-			pos_in_linklist.pos.left += RECT_NODE_WIDTH * 2 + 10;
-			pos_in_linklist.pos.right += RECT_NODE_WIDTH * 2 + 10;
+			pos_node_linklist.pos.left += RECT_NODE_WIDTH * 2 + 10;
+			pos_node_linklist.pos.right += RECT_NODE_WIDTH * 2 + 10;
 		}
-		REGION temp_tail = pos_in_linklist;
+
+		// Tạo vị trí ban đầu của NODE và vị trí NODE di chuyển tới
+		REGION temp_tail = pos_node_linklist;
 		temp_tail.pos.top = display_box.pos.top + 20;
 		temp_tail.pos.bottom = temp_tail.pos.top + RECT_NODE_HEIGHT;
 		circle_list->pTail->node_region.SetRegion(temp_tail.pos, circle_list->pTail->data);
-		while (circle_list->pTail->node_region.pos.top != pos_in_linklist.pos.top)
+
+		// Di chuyển NODE mới vào vị trí trong list
+		while (circle_list->pTail->node_region.pos.top != pos_node_linklist.pos.top)
 		{
 			clear = circle_list->pTail->node_region.pos;
 			clear.right += RECT_NODE_WIDTH + 20;
@@ -164,14 +193,16 @@ void InsertSimulationCircleList(int k)
 			clearObjectOnScreen(clear);
 			circle_list->pTail->node_region.pos.top += DENTAL_MOVE;
 			circle_list->pTail->node_region.pos.bottom += DENTAL_MOVE;
-			DrawListCircleNode(circle_list->pTail);
+			DrawListNode(circle_list->pTail);
 			DrawLinkCircle(circle_list->pHead, circle_list->pTail);
 
 			Sleep(SLEEP_TIME);
 		}
 	}
+	// Thêm NODE vào giữa list
 	else
 	{
+		// Tìm NODE phía trước NODE được thêm
 		NODE* p = circle_list->pHead;
 		int prev_node_k = k - 1;
 		while (p->pNext != nullptr && prev_node_k != 0)
@@ -179,32 +210,37 @@ void InsertSimulationCircleList(int k)
 			p = p->pNext;
 			prev_node_k--;
 		}
-		pos_in_linklist.pos = p->node_region.pos;
-		pos_in_linklist.pos.left += RECT_NODE_WIDTH * 2 + 10;
-		pos_in_linklist.pos.right += RECT_NODE_WIDTH * 2 + 10;
 
+		// Đặt lại vị trí thêm NODE 
+		pos_node_linklist.pos = p->node_region.pos;
+		pos_node_linklist.pos.left += RECT_NODE_WIDTH * 2 + 10;
+		pos_node_linklist.pos.right += RECT_NODE_WIDTH * 2 + 10;
+
+		// Trỏ đến NODE được thêm
 		p = p->pNext;
-		REGION temp_middle = pos_in_linklist;
+
+		// Tạo ví trí ban đầu của NODE và vị trí NODE di chuyển tới
+		REGION temp_middle = pos_node_linklist;
 		temp_middle.pos.top = display_box.pos.top + 20;
 		temp_middle.pos.bottom = temp_middle.pos.top + RECT_NODE_HEIGHT;
 		p->node_region.SetRegion(temp_middle.pos, p->data);
 
-
+		// Di chuyển các NODE để tạo chỗ trống thêm NODE mới
 		NODE* temp = circle_list->pTail;
 		RECT clear;
-		pos_in_linklist.pos = circle_list->pTail->node_region.pos;
-		pos_in_linklist.pos.left += RECT_NODE_WIDTH * 2 + 10;
-		pos_in_linklist.pos.right += RECT_NODE_WIDTH * 2 + 10;
+		pos_node_linklist.pos = circle_list->pTail->node_region.pos;
+		pos_node_linklist.pos.left += RECT_NODE_WIDTH * 2 + 10;
+		pos_node_linklist.pos.right += RECT_NODE_WIDTH * 2 + 10;
 		while (temp != nullptr && temp != p)
 		{
-			while (temp->node_region.pos.right != pos_in_linklist.pos.right)
+			while (temp->node_region.pos.right != pos_node_linklist.pos.right)
 			{
 				clear = temp->node_region.pos;
 				clear.right += RECT_NODE_WIDTH + 15;
 				clearObjectOnScreen(clear);
 				temp->node_region.pos.left += DENTAL_MOVE;
 				temp->node_region.pos.right += DENTAL_MOVE;
-				DrawListCircleNode(temp);
+				DrawListNode(temp);
 				DrawLinkCircle(circle_list->pHead, circle_list->pTail);
 
 				Sleep(SLEEP_TIME);
@@ -214,32 +250,36 @@ void InsertSimulationCircleList(int k)
 			{
 				prev_temp = prev_temp->pNext;
 			}
-			pos_in_linklist.pos = temp->node_region.pos;
-			pos_in_linklist.pos.left -= RECT_NODE_WIDTH * 2 + 10;
-			pos_in_linklist.pos.right -= RECT_NODE_WIDTH * 2 + 10;
+			pos_node_linklist.pos = temp->node_region.pos;
+			pos_node_linklist.pos.left -= RECT_NODE_WIDTH * 2 + 10;
+			pos_node_linklist.pos.right -= RECT_NODE_WIDTH * 2 + 10;
 			temp = prev_temp;
 		}
-		while (p->node_region.pos.top != pos_in_linklist.pos.top)
+
+		// Di chuyển NODE mới vào vị trí trong list
+		while (p->node_region.pos.top != pos_node_linklist.pos.top)
 		{
 			clear = p->node_region.pos;
 			clear.right += RECT_NODE_WIDTH + 5;
 			clearObjectOnScreen(clear);
 			p->node_region.pos.top += DENTAL_MOVE;
 			p->node_region.pos.bottom += DENTAL_MOVE;
-			DrawListCircleNode(p);
+			DrawListNode(p);
 			DrawLinkCircle(circle_list->pHead, circle_list->pTail);
 
 			Sleep(SLEEP_TIME);
 		}
 	}
-	pos_in_linklist.pos = circle_list->pTail->node_region.pos;
+	pos_node_linklist.pos = circle_list->pTail->node_region.pos;
 }
 
-// Ham mo phong delete
+// Mô hỏng xóa NODE
 void DeleteSimulationCircleList(int k)
 {
 	REGION null_deleted;
 	RECT clear;
+
+	// Xóa khu vực hiện thị NODE được xóa trước đó
 	clear = {
 		display_box.pos.left + 20,
 		list_box.pos.bottom + 100,
@@ -247,11 +287,15 @@ void DeleteSimulationCircleList(int k)
 		display_box.pos.bottom - 20,
 	};
 	clearObjectOnScreen(clear);
+
+	// Xóa NODE đầu
 	if (k <= 0 || circle_list->pHead == circle_list->pTail)
 	{
-		pos_in_linklist.pos = circle_list->pHead->node_region.pos;
+		// Xác định vị trí trên console của NODE bị xóa
+		pos_node_linklist.pos = circle_list->pHead->node_region.pos;
 
-		REGION temp_head = pos_in_linklist;
+		// Di chuyển NODE Head ra khỏi list
+		REGION temp_head = pos_node_linklist;
 		temp_head.pos.top += 200;
 		temp_head.pos.bottom = temp_head.pos.top + RECT_NODE_HEIGHT;
 		while (circle_list->pHead->node_region.pos.top != temp_head.pos.top)
@@ -261,9 +305,11 @@ void DeleteSimulationCircleList(int k)
 			clearObjectOnScreen(clear);
 			circle_list->pHead->node_region.pos.top += DENTAL_MOVE;
 			circle_list->pHead->node_region.pos.bottom += DENTAL_MOVE;
-			DrawListCircleNode(circle_list->pHead, 8);
+			DrawListNode(circle_list->pHead, 8);
 			Sleep(SLEEP_TIME);
 		}
+
+		// Vẽ con trỏ NULL cho NODE bị xóa
 		null_deleted = {
 			circle_list->pHead->node_region.pos.left,
 			circle_list->pHead->node_region.pos.top,
@@ -277,46 +323,53 @@ void DeleteSimulationCircleList(int k)
 			clear = circle_list->pHead->node_region.pos;
 			clear.right += RECT_NODE_WIDTH + 5;
 			clearObjectOnScreen(null_deleted.pos);
-			DrawListCircleNode(circle_list->pHead, 8);
+			DrawListNode(circle_list->pHead, 8);
 			null_deleted.pos.left += DENTAL_MOVE;
 			null_deleted.pos.right += DENTAL_MOVE;
 			setBrushColor(15);
 			PrintObject(null_deleted);
 			Sleep(SLEEP_TIME);
 		}
+
+		// Nếu số phần tử của list > 1
+		// Di chuyển các NODE ra phía trước lấp vị trí vừa xóa NODE
 		if (circle_list->size > 1)
 		{
 			NODE* temp = circle_list->pHead->pNext;
 			while (temp != circle_list->pHead)
 			{
-				while (temp->node_region.pos.left != pos_in_linklist.pos.left)
+				while (temp->node_region.pos.left != pos_node_linklist.pos.left)
 				{
 					clear = temp->node_region.pos;
 					clear.right += RECT_NODE_WIDTH + 5;
 					clearObjectOnScreen(clear);
 					temp->node_region.pos.left -= DENTAL_MOVE;
 					temp->node_region.pos.right -= DENTAL_MOVE;
-					DrawListCircleNode(temp);
+					DrawListNode(temp);
 					DrawLinkCircle(circle_list->pHead->pNext, circle_list->pTail);
 					Sleep(SLEEP_TIME);
 				}
-				pos_in_linklist.pos = temp->node_region.pos;
-				pos_in_linklist.pos.left += RECT_NODE_WIDTH * 2 + 10;
-				pos_in_linklist.pos.right += RECT_NODE_WIDTH * 2 + 10;
+				pos_node_linklist.pos = temp->node_region.pos;
+				pos_node_linklist.pos.left += RECT_NODE_WIDTH * 2 + 10;
+				pos_node_linklist.pos.right += RECT_NODE_WIDTH * 2 + 10;
 				temp = temp->pNext;
 			}
 		}
 
 	}
+	// Xóa NODE cuối
 	else if (k >= circle_list->size - 1)
 	{
-		pos_in_linklist.pos = {
+		// Xác định vị trí trên console của NODE bị xóa
+		pos_node_linklist.pos = {
 			circle_list->pTail->node_region.pos.left,
 			circle_list->pTail->node_region.pos.top ,
 			circle_list->pTail->node_region.pos.right ,
 			circle_list->pTail->node_region.pos.bottom,
 		};
-		REGION temp_tail = pos_in_linklist;
+
+		// Di chuyển NODE Head ra khỏi list
+		REGION temp_tail = pos_node_linklist;
 		temp_tail.pos.top += 200;
 		temp_tail.pos.bottom = temp_tail.pos.top + RECT_NODE_HEIGHT;
 		while (circle_list->pTail->node_region.pos.top != temp_tail.pos.top)
@@ -326,9 +379,11 @@ void DeleteSimulationCircleList(int k)
 			clearObjectOnScreen(clear);
 			circle_list->pTail->node_region.pos.top += DENTAL_MOVE;
 			circle_list->pTail->node_region.pos.bottom += DENTAL_MOVE;
-			DrawListCircleNode(circle_list->pTail, 8);
+			DrawListNode(circle_list->pTail, 8);
 			Sleep(SLEEP_TIME);
 		}
+
+		// Vẽ con trỏ NULL cho NODE bị xóa
 		null_deleted = {
 			circle_list->pTail->node_region.pos.left,
 			circle_list->pTail->node_region.pos.top,
@@ -336,15 +391,13 @@ void DeleteSimulationCircleList(int k)
 			circle_list->pTail->node_region.pos.bottom,
 			"NULL"
 		};
-		//NODE* prev_tail = circ 
-		//while()
 		int limit_null_deleted = circle_list->pTail->node_region.pos.right + 2 * RECT_NODE_WIDTH + 50;
 		while (null_deleted.pos.right != limit_null_deleted)
 		{
 			clear = circle_list->pTail->node_region.pos;
 			clear.right += RECT_NODE_WIDTH + 5;
 			clearObjectOnScreen(null_deleted.pos);
-			DrawListCircleNode(circle_list->pTail, 8);
+			DrawListNode(circle_list->pTail, 8);
 			null_deleted.pos.left += DENTAL_MOVE;
 			null_deleted.pos.right += DENTAL_MOVE;
 			setBrushColor(15);
@@ -352,8 +405,10 @@ void DeleteSimulationCircleList(int k)
 			Sleep(SLEEP_TIME);
 		}
 	}
+	// Xóa NODE giữa
 	else
 	{
+		// Tìm NODE sẽ xóa
 		NODE* p = circle_list->pHead;
 		int prev_node_k = k - 1;
 		while (p->pNext != nullptr && prev_node_k != 0)
@@ -362,13 +417,15 @@ void DeleteSimulationCircleList(int k)
 			prev_node_k--;
 		}
 		p = p->pNext;
-		pos_in_linklist.pos = p->node_region.pos;
 
-		REGION temp_middle = pos_in_linklist;
+		// Xác định vị trí trên console của NODE bị xóa
+		pos_node_linklist.pos = p->node_region.pos;
+
+		REGION temp_middle = pos_node_linklist;
 		temp_middle.pos.top += 200;
 		temp_middle.pos.bottom = temp_middle.pos.top + RECT_NODE_HEIGHT;
 
-
+		// Di chuyển NODE bị xóa ra khỏi list
 		while (p->node_region.pos.top != temp_middle.pos.top)
 		{
 			clear = p->node_region.pos;
@@ -376,9 +433,11 @@ void DeleteSimulationCircleList(int k)
 			clearObjectOnScreen(clear);
 			p->node_region.pos.top += DENTAL_MOVE;
 			p->node_region.pos.bottom += DENTAL_MOVE;
-			DrawListCircleNode(p, 8);
+			DrawListNode(p, 8);
 			Sleep(SLEEP_TIME);
 		}
+
+		// Vẽ con trỏ NULL cho NODE bị xóa
 		null_deleted = {
 			p->node_region.pos.left,
 			p->node_region.pos.top,
@@ -386,59 +445,45 @@ void DeleteSimulationCircleList(int k)
 			p->node_region.pos.bottom,
 			"NULL"
 		};
-
 		int limit_null_deleted = p->node_region.pos.right + 2 * RECT_NODE_WIDTH + 50;
 		while (null_deleted.pos.right != limit_null_deleted)
 		{
 			clear = p->node_region.pos;
 			clear.right += RECT_NODE_WIDTH + 5;
 			clearObjectOnScreen(null_deleted.pos);
-			DrawListCircleNode(p, 8);
+			DrawListNode(p, 8);
 			null_deleted.pos.left += DENTAL_MOVE;
 			null_deleted.pos.right += DENTAL_MOVE;
 			setBrushColor(15);
 			PrintObject(null_deleted);
 			Sleep(SLEEP_TIME);
 		}
+
+		// Di chuyển các NODE phía sau NODE bị xóa lên trước
 		NODE* temp = p->pNext;
 		RECT clear;
 		while (temp != circle_list->pHead && temp != p)
 		{
-			while (temp->node_region.pos.left != pos_in_linklist.pos.left)
+			while (temp->node_region.pos.left != pos_node_linklist.pos.left)
 			{
 				clear = temp->node_region.pos;
 				clear.right += RECT_NODE_WIDTH + 5;
 				clearObjectOnScreen(clear);
 				temp->node_region.pos.left -= DENTAL_MOVE;
 				temp->node_region.pos.right -= DENTAL_MOVE;
-				DrawListCircleNode(temp);
+				DrawListNode(temp);
 				DrawLinkCircle(circle_list->pHead, circle_list->pTail);
 				Sleep(SLEEP_TIME);
 			}
-			pos_in_linklist.pos = temp->node_region.pos;
-			pos_in_linklist.pos.left += RECT_NODE_WIDTH * 2 + 10;
-			pos_in_linklist.pos.right += RECT_NODE_WIDTH * 2 + 10;
+			pos_node_linklist.pos = temp->node_region.pos;
+			pos_node_linklist.pos.left += RECT_NODE_WIDTH * 2 + 10;
+			pos_node_linklist.pos.right += RECT_NODE_WIDTH * 2 + 10;
 			temp = temp->pNext;
 		}
 	}
-
 }
 
-// Ham ve node cua circle list
-void DrawListCircleNode(NODE* node_list, int color)
-{
-	setcolor(4);
-	REGION& node = node_list->node_region;
-	REGION next_pointer = { node.pos.right,node.pos.top,node.pos.right + RECT_NODE_WIDTH / 2,node.pos.bottom ,"*" };
-	PrintObject(node, color);
-	PrintObject(next_pointer, color);
-	int x = next_pointer.pos.right;
-	int y = node_list->node_region.pos.top + (node_list->node_region.pos.bottom - node_list->node_region.pos.top) / 2;
-	setcolor(15);
-	drawArrow(x - 10, y, x + RECT_NODE_WIDTH / 2, y);
-}
-
-// Ham ve mui ten cho lien ket Tail->next -> Head
+// Vẽ mũi tên liên két Tail->next -> Head
 void DrawLinkCircle(NODE* head, NODE* tail)
 {
 	ClearLinkCircle(head, tail);
@@ -467,23 +512,23 @@ void DrawLinkCircle(NODE* head, NODE* tail)
 		clearObjectOnScreen(list_box.pos);
 }
 
-// Ham xoa mui ten lien ket Tail->next -> Head
+// Xóa mũi tên Tail->next -> Head
 void ClearLinkCircle(NODE* head, NODE* tail)
 {
 	RECT clear = {
 		display_box.pos.left + 20,
-		pos_in_linklist.pos.bottom ,
+		pos_node_linklist.pos.bottom ,
 		display_box.pos.right - 50,
-		pos_in_linklist.pos.bottom + 65,
+		pos_node_linklist.pos.bottom + 65,
 	};
 	clearObjectOnScreen(clear);
 	if (circle_list->size >= 1)
 	{
 		clear = {
 		tail->node_region.pos.right + RECT_NODE_WIDTH + 2,
-		pos_in_linklist.pos.top ,
+		pos_node_linklist.pos.top ,
 		display_box.pos.right - 100,
-		pos_in_linklist.pos.bottom,
+		pos_node_linklist.pos.bottom,
 		};
 		clearObjectOnScreen(clear);
 	}
