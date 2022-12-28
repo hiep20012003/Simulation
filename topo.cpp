@@ -102,7 +102,7 @@ void InputTopo()
 	if (check == true)
 	{
 		cout << N << " " << num_edges << '\n';
-		Sleep(SLEEP_TIME * 150);
+		Sleep(150);
 	}
 	num_vertices = N;
 
@@ -152,7 +152,7 @@ void InputTopo()
 		if (check == true)
 		{
 			cout << x << " " << y << '\n';
-			Sleep(SLEEP_TIME * 150);
+			Sleep(150);
 		}
 		// Đặt các giá trị của NODE từ input
 		A[y].COUNT = A[y].COUNT + 1;
@@ -217,6 +217,10 @@ void InputTopo()
 }
 void ProcessTopoSort()
 {
+	printText("Nhan nut bat ky de tiep tuc",
+		{ 100,WINDOW_HEIGHT - 100,600,WINDOW_HEIGHT - 50 }, font_size, 15);
+	_getch();
+	clearObjectOnScreen({ 100,WINDOW_HEIGHT - 100,600,WINDOW_HEIGHT - 50 });
 	// Tạo hàng đợi và đặt tất cả giá trị QLINK = 0
 	int R = 0, F;
 	for (int i = 0; i <= num_vertices; i++)
@@ -264,9 +268,12 @@ void ProcessTopoSort()
 			Sleep(SLEEP_TIME * 150);
 		}
 	}
-
-	//xu ly topo
-
+	// Tạm dừng màn hình
+	printText("Nhan nut bat ky de tiep tuc",
+		{ 100,WINDOW_HEIGHT - 100,600,WINDOW_HEIGHT - 50 }, font_size, 15);
+	_getch();
+	clearObjectOnScreen({ 100,WINDOW_HEIGHT - 100,600,WINDOW_HEIGHT - 50 });
+	//
 	int nout = 0;
 	out[num_vertices + 1] = { 0 };
 	int ptr_front = 0;
@@ -375,6 +382,12 @@ void ProcessTopoSort()
 		out_limit += 60;
 		PrintObject(i);
 		PrintObject(node[F], 12);
+		// Tạm dừng màn hình
+		printText("Nhan nut bat ky de tiep tuc",
+			{ 100,WINDOW_HEIGHT - 100,600,WINDOW_HEIGHT - 50 }, font_size, 15);
+		_getch();
+		clearObjectOnScreen({ 100,WINDOW_HEIGHT - 100,600,WINDOW_HEIGHT - 50 });
+		//
 	}
 	// Nếu N == 0 thì đồ thị có thứ tự topo
 	if (N != 0)
