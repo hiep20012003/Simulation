@@ -1,4 +1,4 @@
-#include"graphics.h"
+﻿#include"graphics.h"
 #include"queue.h"
 #include"global.h"
 #include<conio.h>
@@ -8,6 +8,7 @@ QUEUE* queue;
 int pos_in_queue_box;
 RECT pos_node_appear_queue;
 
+// Gọi chương trình mô phỏng
 void QueueSimulation()
 {
 	queue = new QUEUE();
@@ -22,6 +23,9 @@ void QueueSimulation()
 	system("cls");
 
 }
+
+// Khởi tạo vị trí và kích thước
+// cho các đối tượng vẽ lên console ban đầu
 void InitPositionObjectsQueue()
 {
 	RECT_NODE_WIDTH = 120;
@@ -60,6 +64,8 @@ void InitPositionObjectsQueue()
 
 
 }
+
+// Vẽ các đối tượng ban đầu lên console
 void DrawOriginalObjectsQueue()
 {
 	setBrushColor(16);
@@ -85,18 +91,21 @@ void DrawOriginalObjectsQueue()
 	rectangle(queue_box.pos.right - 10, queue_box.pos.top + 10, queue_box.pos.right + 10, queue_box.pos.bottom - 10);
 	rectangle(queue_box.pos.left - 10, queue_box.pos.top + 10, queue_box.pos.left + 10, queue_box.pos.bottom - 10);
 }
+
+// Chạy chương trình mô phỏng
 void RunProgramQueue()
 {
 	NODE* node_deleted;
 	string str;
 	while (true)
 	{
-		if (_kbhit())
+		if (_kbhit())					// Bắt sự kiện bàn phím
 		{
-			CheckCurrentCursor();
+			CheckCurrentCursor();		// Kiểm tra vị trí con trỏ
 			char c = _getch();
-			if (c == '1')
+			if (c == '1')				// Nút INSERT
 			{
+				// Thông báo
 				if (queue->size == QUEUE_SIZE)
 				{
 					PrintToNewLine(cursor.x, cursor.y, "Queue was Full");
@@ -105,13 +114,19 @@ void RunProgramQueue()
 				string insert_mes;
 				insert_mes = "Insert Front NODE";
 				PrintTo(cursor.x, cursor.y, insert_mes + ": ");
+
+				// Input
 				str = RealTimeInputString();
+				// Thêm NODE
 				queue->InsertNode(str);
+				// Mô phỏng thêm NODE
 				InsertSimulationQueue();
+
 				PrintToNewLine(cursor.x, cursor.y, "Completed " + insert_mes);
 			}
-			else if (c == '2')
+			else if (c == '2')			// Nút DELETE
 			{
+				// Thông báo
 				if (queue->IsEmpty())
 				{
 					PrintToNewLine(cursor.x, cursor.y, "Queue Empty. Can't delete");
@@ -119,20 +134,29 @@ void RunProgramQueue()
 				}
 				string delete_mes;
 				delete_mes = "Delete Rear NODE";
+
+				// Mô phỏng xóa NODE
 				DeleteSimulationQueue();
+				// Xóa NODE
 				node_deleted = queue->DeleteNode();
+
 				PrintToNewLine(cursor.x, cursor.y, delete_mes);
 			}
-			else if (c == 27)
+			else if (c == 27)			// Nút END
 			{
 				break;
 			}
 		}
 	}
 }
+
+// Mô phỏng thêm NODE
 void InsertSimulationQueue()
 {
+	// Đặt vị trí cho NODE mới thêm
 	queue->pRear->node_region.SetRegion(pos_node_appear_queue, queue->pRear->data);
+
+	// Di chuyển NODE vào hàng đợi
 	REGION& i = queue->pRear->node_region;
 	while (i.pos.left != pos_in_queue_box + 10)
 	{
@@ -142,10 +166,12 @@ void InsertSimulationQueue()
 		PrintObject(queue->pRear->node_region);
 		Sleep(SLEEP_TIME);
 	}
+	// Cập nhập vị trí thêm NODE tiếp theo
 	pos_in_queue_box = i.pos.right;
 }
 void DeleteSimulationQueue()
 {
+	// Di chuyển NODE ra khỏi hàng đợi
 	REGION& i = queue->pFront->node_region;
 	while (i.pos.left != queue_box.pos.left - 200)
 	{
@@ -172,7 +198,7 @@ void DeleteSimulationQueue()
 		PrintObject(i);
 		Sleep(SLEEP_TIME);
 	}
-
+	// Đưa các NODE phía sau lên trước
 	NODE* p = queue->pFront->pNext;
 	int limit = queue_box.pos.left;
 	while (p != nullptr)
@@ -188,6 +214,7 @@ void DeleteSimulationQueue()
 		limit = p->node_region.pos.right;
 		p = p->pNext;
 	}
+	// Cập nhập vị trí thêm NODE tiếp theo
 	if (queue->pFront->pNext != nullptr)
 		pos_in_queue_box = queue->pFront->node_region.pos.right;
 	else

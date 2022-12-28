@@ -1,27 +1,24 @@
-#include"graphics.h"
+﻿#include"graphics.h"
 #include"global.h"
 #include"deque.h"
 #include<conio.h>
 
-
-// Khai bao queue
 DEQUEUE* deque;
 
-// Khai bao khu vuc ve cua cac doi tuong tren man hinh
 REGION dequeue_box;
 REGION insert_front_box;
 REGION insert_rear_box;
 REGION delete_front_box;
 REGION delete_rear_box;
 
-// Khai bao vi tri xuat hien ban dau khi insert node
+// Biến lưu vị trí xuất hiện ban đầu khi thêm NODE
 RECT pos_node_appear_front;
 RECT pos_node_appear_rear;
 
-// Bien xac dinh vi tri trong dequeue_box
-int pos_in_dequeue_box;
+// Biến xác định vị trí trong dequeue_box
+int pos_node_deque;
 
-// Ham mo phong Dequeue
+// Gọi chương trình mô phỏng
 void DequeueSimulation()
 {
 	deque = new DEQUEUE();
@@ -36,7 +33,8 @@ void DequeueSimulation()
 	system("cls");
 }
 
-// Ham khoi tao vi tri cho cac doi tuong tren man hinh
+// Khởi tạo vị trí và kích thước
+// cho các đối tượng vẽ lên console ban đầu
 void InitPositionObjectsDequeue()
 {
 	RECT_NODE_WIDTH = 120;
@@ -51,7 +49,7 @@ void InitPositionObjectsDequeue()
 	dequeue_box.pos.right = dequeue_box.pos.left + (RECT_NODE_WIDTH + 10) * QUEUE_SIZE + 10;
 	dequeue_box.pos.bottom = dequeue_box.pos.top + RECT_NODE_HEIGHT + 20;
 
-	pos_in_dequeue_box = dequeue_box.pos.left;
+	pos_node_deque = dequeue_box.pos.left;
 
 	insert_front_box = { menu_box.pos.left + 50, menu_box.pos.top + 70,
 		menu_box.pos.left + 400, menu_box.pos.top + 150, "1. INSERT FRONT" };
@@ -91,7 +89,7 @@ void InitPositionObjectsDequeue()
 	pos_node_appear_rear.bottom = pos_node_appear_rear.top + RECT_NODE_HEIGHT;
 }
 
-// Ham ve khu vuc hien thi va cac doi tuong ban dau
+// Vẽ các đối tượng ban đầu lên console
 void DrawOriginalObjectsDequeue()
 {
 	setBrushColor(16);
@@ -120,7 +118,7 @@ void DrawOriginalObjectsDequeue()
 	rectangle(dequeue_box.pos.left - 10, dequeue_box.pos.top + 10, dequeue_box.pos.left + 10, dequeue_box.pos.bottom - 10);
 }
 
-// Ham bat su kien cho insert, delete node
+// Chạy chương trình mô phỏng
 void RunProgramDequeue()
 {
 	NODE* node_deleted;
@@ -133,8 +131,9 @@ void RunProgramDequeue()
 		{
 			CheckCurrentCursor();
 			char c = _getch();
-			if (c == '1' || c == '2')
+			if (c == '1' || c == '2')			// Nút INSERT
 			{
+				// Thông báo
 				if (deque->size == DEQUEUE_SIZE)
 				{
 					PrintToNewLine(cursor.x, cursor.y, "Dequeue was Full");
@@ -152,13 +151,18 @@ void RunProgramDequeue()
 					insert_mes = "Insert Front NODE";
 				}
 				PrintTo(cursor.x, cursor.y, insert_mes + ": ");
+				// Input
 				str = RealTimeInputString();
+				// Thêm NODE 
 				deque->InsertNode(str, front);
+				// Mô phỏng thêm NODE
 				InsertSimulationDequeue(front);
+
 				PrintToNewLine(cursor.x, cursor.y, "Completed " + insert_mes);
 			}
-			else if (c == '3' || c == '4')
+			else if (c == '3' || c == '4')		// Nút DELETE
 			{
+				// Thông báo
 				if (deque->IsEmpty())
 				{
 					PrintToNewLine(cursor.x, cursor.y, "Dequeue Empty. Can't delete");
@@ -175,11 +179,13 @@ void RunProgramDequeue()
 					front = true;
 					delete_mes = "Delete Front NODE";
 				}
+				// Mô phỏng xóa NODE
 				DeleteSimulationDequeue(front);
+				// Xóa NODE
 				node_deleted = deque->DeleteNode(front);
 				PrintToNewLine(cursor.x, cursor.y, "Completed " + delete_mes);
 			}
-			else if (c == 27)
+			else if (c == 27)			// Nút END
 			{
 				break;
 			}
@@ -187,13 +193,17 @@ void RunProgramDequeue()
 	}
 }
 
-// Ham mo phong insert
+// Mô phỏng thêm NODE
 void InsertSimulationDequeue(bool front)
 {
+	// Thêm vào phía trước
 	if (front)
 	{
-		pos_in_dequeue_box = dequeue_box.pos.left;
+		// Xác định vị trí thêm NODE trên console
+		pos_node_deque = dequeue_box.pos.left;
 		deque->pFront->node_region.SetRegion(pos_node_appear_front, deque->pFront->data);
+
+		// Di chuyển các NODE ra phía sau để trống vị trí thêm NODE
 		NODE* p = deque->pRear;
 		int limit = p->node_region.pos.right + RECT_NODE_WIDTH + 20;
 		while (p != deque->pFront)
@@ -209,8 +219,10 @@ void InsertSimulationDequeue(bool front)
 			limit = p->node_region.pos.left;
 			p = p->pPrev;
 		}
+
+		// Di chuyển NODE vào hàng đợi
 		REGION& i = deque->pFront->node_region;
-		while (i.pos.left != pos_in_dequeue_box + 10)
+		while (i.pos.left != pos_node_deque + 10)
 		{
 			clearObjectOnScreen(i.pos);
 			i.pos.left += DENTAL_MOVE;
@@ -219,15 +231,19 @@ void InsertSimulationDequeue(bool front)
 			Sleep(SLEEP_TIME);
 		}
 	}
+	// Thêm vào phía sau
 	else
 	{
+		// Xác định vị trí thêm NODE
 		if (deque->pRear == deque->pFront)
-			pos_in_dequeue_box = dequeue_box.pos.left;
+			pos_node_deque = dequeue_box.pos.left;
 		else
-			pos_in_dequeue_box = deque->pRear->pPrev->node_region.pos.right;
+			pos_node_deque = deque->pRear->pPrev->node_region.pos.right;
 		deque->pRear->node_region.SetRegion(pos_node_appear_rear, deque->pRear->data);
+		
+		// Di chuyển NODE vào hàng đợi
 		REGION& i = deque->pRear->node_region;
-		while (i.pos.left != pos_in_dequeue_box + 10)
+		while (i.pos.left != pos_node_deque + 10)
 		{
 			clearObjectOnScreen(i.pos);
 			i.pos.left -= DENTAL_MOVE;
@@ -238,13 +254,13 @@ void InsertSimulationDequeue(bool front)
 	}
 }
 
-// Ham mo phong delete
+// Mô phỏng xóa NODE
 void DeleteSimulationDequeue(bool front)
 {
+	// Xóa NODE phía trước
 	if (front)
 	{
-		pos_in_dequeue_box = dequeue_box.pos.left - RECT_NODE_WIDTH - 80;
-
+		// Đưa NODE bị xóa ra khỏi hàng đợi
 		REGION& i = deque->pFront->node_region;
 		while (i.pos.left != dequeue_box.pos.left - 200)
 		{
@@ -270,7 +286,7 @@ void DeleteSimulationDequeue(bool front)
 			PrintObject(i);
 			Sleep(SLEEP_TIME);
 		}
-
+		// Di chuyển các NODE phía sau lên trước
 		NODE* p = deque->pFront->pNext;
 		int limit = dequeue_box.pos.left;
 		while (p != nullptr)
@@ -287,8 +303,10 @@ void DeleteSimulationDequeue(bool front)
 			p = p->pNext;
 		}
 	}
+	// Xóa NODE phía sau
 	else
 	{
+		// Đưa NODE bị xóa ra khỏi hàng đợi
 		REGION& i = deque->pRear->node_region;
 		while (i.pos.right != dequeue_box.pos.right + 200)
 		{

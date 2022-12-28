@@ -13,7 +13,7 @@ extern REGION delete_rear_box;
 extern RECT pos_node_appear_front;
 extern RECT pos_node_appear_rear;
 
-extern int pos_in_dequeue_box;
+extern int pos_node_dequeue;
 
 void InsertSimulationDequeue(bool front);
 void DeleteSimulationDequeue(bool front);

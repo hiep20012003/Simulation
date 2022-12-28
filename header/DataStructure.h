@@ -20,7 +20,7 @@ struct REGION
 {
 	RECT pos;
 	string data;
-	void SetRegion(int x1, int y1, int x2, int y2, string str = "null")
+	void SetRegion(int x1, int y1, int x2, int y2, string str = "")
 	{
 		pos.left = x1;
 		pos.top = y1;
@@ -28,7 +28,7 @@ struct REGION
 		pos.bottom = y2;
 		data = str;
 	}
-	void SetRegion(RECT region, string str = "null")
+	void SetRegion(RECT region, string str = "")
 	{
 		pos = region;
 		data = str;
@@ -272,7 +272,6 @@ struct LINKLIST
 		}
 		else if (k >= size - 1)
 		{
-			//k = CountElement() - 1;
 			temp = pTail;
 			NODE* p = pHead;
 			int prev_node_k = size - 2;
@@ -377,7 +376,6 @@ struct CIRCLELIST
 		}
 		else if (k >= size - 1)
 		{
-			//k = CountElement() - 1;
 			temp = pTail;
 			NODE* p = pHead;
 			int prev_node_k = size - 2;

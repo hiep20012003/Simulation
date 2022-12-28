@@ -1,4 +1,4 @@
-#include"global.h"
+﻿#include"global.h"
 #include"graphics.h"
 #include<conio.h>
 
@@ -27,10 +27,11 @@ REGION command_box;
 REGION display_box;
 REGION menu_box;
 
-// Ham khoi tao cac thuoc tinh cua cua so console
+// Hàm chỉnh lại của sổ console :
+// tắt cuộn, tắt quick edit mode,
+// đặt lại input mode
 void InitConsoleWindow()
 {
-	//setWindowSize(WINDOW_WIDTH, WINDOW_HEIGHT);
 	system("cls");
 	disableScroll();
 	disableSelection();
@@ -39,9 +40,9 @@ void InitConsoleWindow()
 	Sleep(1000);
 }
 
-// Ham tra ve string nhap tu ban phim
-// voi mot so dieu kien nhu: chi chap nhan chu hoac so
-// va di chuyen vi tri con tro sau khi nhap theo y muon
+// Trả về chuỗi nhập từ bàn phím và hiển thị ký tự người dùng nhập theo thời gian thực
+// với điều kiện: Chỉ nhập số nguyên >= 0 , hoặc chữ cái 
+// và điều khiển vị trí con trỏ luôn nằm trong command_box
 string RealTimeInputString()
 {
 	char ch;
@@ -57,7 +58,7 @@ string RealTimeInputString()
 			CheckCurrentCursor();
 			cout << ch;
 		}
-		else if (ch == 8)
+		else if (ch == 8)		// Backspace
 		{
 			COORD cursor = getConsoleCursorPosition();
 			if (cursor.X > 0 && !str.empty())
@@ -68,7 +69,7 @@ string RealTimeInputString()
 				str.pop_back();
 			}
 		}
-		else if (ch == 13 || ch == 32)
+		else if (ch == 13)		// Enter
 		{
 			CheckCurrentCursor();
 			if (str.empty())
@@ -79,13 +80,15 @@ string RealTimeInputString()
 			PrintToNewLine(cursor.x, cursor.y, "");
 		}
 	} while (ch != 13 || str.empty());
-	string str2(str, 0, 4);
+
+	string str2(str, 0, 4);		// Chỉ lấy 4 ký tự đầu tiên trong chuỗi
 	return str2;
 }
 
-// Ham tra ve int nhap tu ban phim
-// voi mot so dieu kien nhu: chi so
-// va di chuyen vi tri con tro sau khi nhap theo y muon
+// Trả về số nguyên nhập từ bàn phím và hiển thị ký tự người dùng nhập theo thời gian thực
+// với điều kiện: Chỉ nhập số nguyên >= 0
+// và điều khiển vị trí con trỏ luôn nằm trong command_box
+
 int RealTimeInputInt()
 {
 	char ch;
@@ -113,7 +116,7 @@ int RealTimeInputInt()
 				count--;
 			}
 		}
-		else if (ch == 13 || ch == 32)
+		else if (ch == 13)
 		{
 			CheckCurrentCursor();
 			if (num == -100)
@@ -124,6 +127,7 @@ int RealTimeInputInt()
 			PrintToNewLine(cursor.x, cursor.y, "");
 		}
 	} while (ch != 13 || num == -100);
+	// Chỉ lấy 4 ký tự đầu tiên
 	if (count > 4)
 	{
 		num = num / (10 * (count - 4));
@@ -131,9 +135,9 @@ int RealTimeInputInt()
 	return num;
 }
 
-// Kiem tra vi tri con tro co vuot ngoai pham vi command_box
-// Neu vuot qua pham vi command_box thi reset cursor = start_cursor
-// va xoa man hinh khu vuc command_box
+// Kiểm tra vị trí con trỏ có nằm ngoài command_box hay không
+// Nếu nằm ngoài command_box thì reset cursor = start_cursor
+// và xóa màn hình khu vực command_box
 void CheckCurrentCursor()
 {
 	int limitY = (command_box.pos.bottom) / 21 - 2;
@@ -158,7 +162,8 @@ void CheckCurrentCursor()
 	}
 }
 
-// In ra man hinh va dua con tro den dong tiep theo ,trong pham vi command_box
+// In chuỗi ra console 
+// và trỏ đến dòng tiếp theo trong command_box
 void PrintToNewLine(int x, int y, string str)
 {
 	setfontcolor(10);
@@ -167,20 +172,20 @@ void PrintToNewLine(int x, int y, string str)
 	cursor.ChangePos(cursor.x, y + 12);
 }
 
-// In ra man hinh khong xuong dong, trong pham vi command_box
+// In ra màn hình không xuống dòng trong pham vi command_box
 void PrintTo(int x, int y, string str)
 {
 	setfontcolor(10);
 	outtextxy(x, y, str);
 	cursor.ChangePos(60, y);
 }
-// Ve doi tuong len len console
-// Doi tuong REGION bao gom 2 field: data va pos
+// Vẽ đối tượng lên console
+// Kiểu REGION bao gồm : data va pos
 void PrintObject(REGION object, int color)
 {
 	setcolor(color / 2);
 	setBrushColor(color);
 	rectangle(object.pos);
-	if (object.data != "null")
+	if (object.data != "")
 		printText(object.data, object.pos, font_size, color);
 }

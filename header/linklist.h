@@ -4,7 +4,7 @@
 
 extern LINKLIST* list;
 extern REGION list_box;
-extern REGION pos_in_linklist;
+extern REGION pos_node_linklist;
 extern REGION null;
 
 void InsertSimulationList(int k);
