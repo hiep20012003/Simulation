@@ -65,11 +65,12 @@ int main()
 			}
 		}
 	}
-	out[nout++] = 0;
+	if(N==0)
 	{
 		for (int i = 0; i <= number; i++)
 			cout << out[i] << " ";
 	}
+	else cout<<"Khong co thu tu topo"<<endl;
 	getchar();
 	return 1;
 }
